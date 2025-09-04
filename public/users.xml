@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+  <user>
+    <id>a8f5f167-f44b-4c2d-8b5e-f2a3b8c9d0e1</id>
+    <name>Alice Johnson</name>
+    <email>alice.johnson@company.com</email>
+    <roles>
+      <role>Admin</role>
+      <role>Editor</role>
+    </roles>
+  </user>
+  <user>
+    <id>b7e4e156-e33a-3b1c-7a4d-e1a2b7c8d9f0</id>
+    <name>Bob Smith</name>
+    <email>bob.smith@company.com</email>
+    <roles>
+      <role>Editor</role>
+    </roles>
+  </user>
+  <user>
+    <id>c6d3d145-d22b-2a0b-6a3c-d0a1b6c7d8e9</id>
+    <name>Carol Davis</name>
+    <email>carol.davis@company.com</email>
+    <roles>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>d5c2c134-c11a-1909-5a2b-c9a0b5c6d7e8</id>
+    <name>David Wilson</name>
+    <email>david.wilson@company.com</email>
+    <roles>
+      <role>Admin</role>
+      <role>Editor</role>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>e4b1b123-b008-0808-4a1a-b8a9b4c5d6e7</id>
+    <name>Eva Brown</name>
+    <email>eva.brown@company.com</email>
+    <roles>
+      <role>Editor</role>
+      <role>Viewer</role>
+    </roles>
+  </user>
+</users>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles>
+  <role>
+    <id>admin</id>
+    <name>Admin</name>
+    <description>Full system access and user management</description>
+  </role>
+  <role>
+    <id>editor</id>
+    <name>Editor</name>
+    <description>Can create and edit content</description>
+  </role>
+  <role>
+    <id>viewer</id>
+    <name>Viewer</name>
+    <description>Read-only access to content</description>
+  </role>
+</roles>

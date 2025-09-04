@@ -1,56 +1,65 @@
 import { User, Role, UpdateUserRolesRequest } from "@/types/user";
 
-// Mock data
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    email: "alice.johnson@company.com",
-    roles: ["Admin", "Editor"]
-  },
-  {
-    id: "2", 
-    name: "Bob Smith",
-    email: "bob.smith@company.com",
-    roles: ["Editor"]
-  },
-  {
-    id: "3",
-    name: "Carol Davis",
-    email: "carol.davis@company.com", 
-    roles: ["Viewer"]
-  },
-  {
-    id: "4",
-    name: "David Wilson",
-    email: "david.wilson@company.com",
-    roles: ["Admin", "Editor", "Viewer"]
-  },
-  {
-    id: "5",
-    name: "Eva Brown",
-    email: "eva.brown@company.com",
-    roles: ["Editor", "Viewer"]
-  }
-];
+// Cache for parsed data
+let usersCache: User[] | null = null;
+let rolesCache: Role[] | null = null;
 
-const mockRoles: Role[] = [
-  {
-    id: "admin",
-    name: "Admin",
-    description: "Full system access and user management"
-  },
-  {
-    id: "editor", 
-    name: "Editor",
-    description: "Can create and edit content"
-  },
-  {
-    id: "viewer",
-    name: "Viewer", 
-    description: "Read-only access to content"
+// Parse XML to get users
+async function parseUsersXML(): Promise<User[]> {
+  if (usersCache) return usersCache;
+  
+  const response = await fetch('/users.xml');
+  const xmlText = await response.text();
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+  
+  const userElements = xmlDoc.getElementsByTagName('user');
+  const users: User[] = [];
+  
+  for (let i = 0; i < userElements.length; i++) {
+    const userElement = userElements[i];
+    const id = userElement.getElementsByTagName('id')[0]?.textContent || '';
+    const name = userElement.getElementsByTagName('name')[0]?.textContent || '';
+    const email = userElement.getElementsByTagName('email')[0]?.textContent || '';
+    
+    const roleElements = userElement.getElementsByTagName('role');
+    const roles: string[] = [];
+    for (let j = 0; j < roleElements.length; j++) {
+      const roleText = roleElements[j]?.textContent;
+      if (roleText) roles.push(roleText);
+    }
+    
+    users.push({ id, name, email, roles });
   }
-];
+  
+  usersCache = users;
+  return users;
+}
+
+// Parse XML to get roles
+async function parseRolesXML(): Promise<Role[]> {
+  if (rolesCache) return rolesCache;
+  
+  const response = await fetch('/roles.xml');
+  const xmlText = await response.text();
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+  
+  const roleElements = xmlDoc.getElementsByTagName('role');
+  const roles: Role[] = [];
+  
+  for (let i = 0; i < roleElements.length; i++) {
+    const roleElement = roleElements[i];
+    const id = roleElement.getElementsByTagName('id')[0]?.textContent || '';
+    const name = roleElement.getElementsByTagName('name')[0]?.textContent || '';
+    const description = roleElement.getElementsByTagName('description')[0]?.textContent || '';
+    
+    roles.push({ id, name, description });
+  }
+  
+  rolesCache = roles;
+  return roles;
+}
 
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -58,12 +67,12 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const apiService = {
   async getUsers(): Promise<User[]> {
     await delay(800); // Simulate network delay
-    return [...mockUsers];
+    return await parseUsersXML();
   },
 
   async getRoles(): Promise<Role[]> {
     await delay(300);
-    return [...mockRoles];
+    return await parseRolesXML();
   },
 
   async updateUserRoles(request: UpdateUserRolesRequest): Promise<User> {
@@ -74,16 +83,24 @@ export const apiService = {
       throw new Error("Failed to update user roles. Please try again.");
     }
 
-    const userIndex = mockUsers.findIndex(u => u.id === request.userId);
+    const users = await parseUsersXML();
+    const userIndex = users.findIndex(u => u.id === request.userId);
     if (userIndex === -1) {
       throw new Error("User not found");
     }
 
-    mockUsers[userIndex] = {
-      ...mockUsers[userIndex],
+    // Update cache
+    if (usersCache) {
+      usersCache[userIndex] = {
+        ...usersCache[userIndex],
+        roles: [...request.roles]
+      };
+      return { ...usersCache[userIndex] };
+    }
+
+    return {
+      ...users[userIndex],
       roles: [...request.roles]
     };
-
-    return { ...mockUsers[userIndex] };
   }
 };
