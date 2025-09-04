@@ -44,4 +44,63 @@
       <role>Viewer</role>
     </roles>
   </user>
+  <user>
+    <id>f3a0a012-a997-9797-3a0a-a7a8a3a4a5a6</id>
+    <name>Frank Miller</name>
+    <email>frank.miller@company.com</email>
+    <roles>
+      <role>Admin</role>
+    </roles>
+  </user>
+  <user>
+    <id>g2989901-9886-8686-2999-96979295949a</id>
+    <name>Grace Taylor</name>
+    <email>grace.taylor@company.com</email>
+    <roles>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>h1878890-8775-7575-1888-8586848382b1</id>
+    <name>Henry Anderson</name>
+    <email>henry.anderson@company.com</email>
+    <roles>
+      <role>Editor</role>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>i0767789-7664-6464-0777-7475737271c2</id>
+    <name>Iris Thompson</name>
+    <email>iris.thompson@company.com</email>
+    <roles>
+      <role>Admin</role>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>j9656678-6553-5353-9666-6364626160d3</id>
+    <name>Jack White</name>
+    <email>jack.white@company.com</email>
+    <roles>
+      <role>Editor</role>
+    </roles>
+  </user>
+  <user>
+    <id>k8545567-5442-4242-8555-5253515049e4</id>
+    <name>Kate Harris</name>
+    <email>kate.harris@company.com</email>
+    <roles>
+      <role>Viewer</role>
+    </roles>
+  </user>
+  <user>
+    <id>l7434456-4331-3131-7444-4142403938f5</id>
+    <name>Leo Martin</name>
+    <email>leo.martin@company.com</email>
+    <roles>
+      <role>Admin</role>
+      <role>Editor</role>
+    </roles>
+  </user>
 </users>

@@ -10,12 +10,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useToast } from "@/hooks/use-toast";
 
 export function UserRoleManager() {
   const [roleFilter, setRoleFilter] = React.useState<string>("all");
+  const [currentPage, setCurrentPage] = React.useState(1);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const usersPerPage = 5;
 
   // Fetch users and roles
   const { data: users = [], isLoading: isLoadingUsers } = useQuery({
@@ -57,6 +60,13 @@ export function UserRoleManager() {
     if (roleFilter === "all") return users;
     return users.filter((user) => user.roles.includes(roleFilter));
   }, [users, roleFilter]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const paginatedUsers = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * usersPerPage;
+    return filteredUsers.slice(startIndex, startIndex + usersPerPage);
+  }, [filteredUsers, currentPage, usersPerPage]);
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
@@ -159,32 +169,22 @@ export function UserRoleManager() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead className="w-[300px]">Manage Roles</TableHead>
+                    <TableHead className="w-[300px]">Roles</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers.length === 0 ? (
+                  {paginatedUsers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="h-24 text-center">
+                      <TableCell colSpan={3} className="h-24 text-center">
                         No users found.
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredUsers.map((user) => (
+                    paginatedUsers.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
                         <TableCell className="text-muted-foreground">
                           {user.email}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-1 flex-wrap">
-                            {user.roles.map((role) => (
-                              <Badge key={role} variant="outline">
-                                {role}
-                              </Badge>
-                            ))}
-                          </div>
                         </TableCell>
                         <TableCell>
                           <MultiSelect
@@ -202,6 +202,39 @@ export function UserRoleManager() {
                 </TableBody>
               </Table>
             </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </CardContent>
         </Card>
 
