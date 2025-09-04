@@ -16,6 +16,8 @@ import { useToast } from "@/hooks/use-toast";
 export function UserRoleManager() {
   const [roleFilter, setRoleFilter] = React.useState<string>("all");
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [sortField, setSortField] = React.useState<'name' | 'email'>('name');
+  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const usersPerPage = 5;
@@ -55,22 +57,62 @@ export function UserRoleManager() {
     },
   });
 
-  // Filter users by role
-  const filteredUsers = React.useMemo(() => {
-    if (roleFilter === "all") return users;
-    return users.filter((user) => user.roles.includes(roleFilter));
-  }, [users, roleFilter]);
+  // Filter and sort users
+  const filteredAndSortedUsers = React.useMemo(() => {
+    let filtered = users;
+    if (roleFilter !== "all") {
+      filtered = users.filter((user) => user.roles.includes(roleFilter));
+    }
+    
+    // Sort users
+    const sorted = [...filtered].sort((a, b) => {
+      const aValue = sortField === 'name' ? a.name : a.email;
+      const bValue = sortField === 'name' ? b.name : b.email;
+      
+      if (sortDirection === 'asc') {
+        return aValue.localeCompare(bValue);
+      } else {
+        return bValue.localeCompare(aValue);
+      }
+    });
+    
+    return sorted;
+  }, [users, roleFilter, sortField, sortDirection]);
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const totalPages = Math.ceil(filteredAndSortedUsers.length / usersPerPage);
   const paginatedUsers = React.useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;
-    return filteredUsers.slice(startIndex, startIndex + usersPerPage);
-  }, [filteredUsers, currentPage, usersPerPage]);
+    return filteredAndSortedUsers.slice(startIndex, startIndex + usersPerPage);
+  }, [filteredAndSortedUsers, currentPage, usersPerPage]);
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
+    if (newRoles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Users must have at least one role assigned",
+        variant: "destructive",
+      });
+      return;
+    }
     updateUserRolesMutation.mutate({ userId, roles: newRoles });
+  };
+
+  // Handle filter change and reset to first page
+  const handleFilterChange = (value: string) => {
+    setRoleFilter(value);
+    setCurrentPage(1);
+  };
+
+  // Handle sorting
+  const handleSort = (field: 'name' | 'email') => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
   };
 
   // Get role options for MultiSelect
@@ -108,7 +150,7 @@ export function UserRoleManager() {
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
-            <span>{filteredUsers.length} users</span>
+            <span>{filteredAndSortedUsers.length} users</span>
           </div>
         </div>
 
@@ -127,7 +169,7 @@ export function UserRoleManager() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">Filter by role:</span>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <Select value={roleFilter} onValueChange={handleFilterChange}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
                   </SelectTrigger>
@@ -145,7 +187,7 @@ export function UserRoleManager() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setRoleFilter("all")}
+                  onClick={() => handleFilterChange("all")}
                 >
                   Clear Filter
                 </Button>
@@ -167,8 +209,32 @@ export function UserRoleManager() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort('name')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name
+                        {sortField === 'name' && (
+                          <span className="text-xs">
+                            {sortDirection === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort('email')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Email
+                        {sortField === 'email' && (
+                          <span className="text-xs">
+                            {sortDirection === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </div>
+                    </TableHead>
                     <TableHead className="w-[300px]">Roles</TableHead>
                   </TableRow>
                 </TableHeader>

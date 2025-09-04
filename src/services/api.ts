@@ -61,6 +61,25 @@ async function parseRolesXML(): Promise<Role[]> {
   return roles;
 }
 
+// Save users to XML file
+async function saveUsersToXML(users: User[]): Promise<void> {
+  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<users>
+${users.map(user => `  <user>
+    <id>${user.id}</id>
+    <name>${user.name}</name>
+    <email>${user.email}</email>
+    <roles>
+${user.roles.map(role => `      <role>${role}</role>`).join('\n')}
+    </roles>
+  </user>`).join('\n')}
+</users>`;
+
+  // In a real app, this would save to the server
+  // For now, we'll just simulate the save operation
+  console.log('Saving users to XML:', xmlContent);
+}
+
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -89,18 +108,20 @@ export const apiService = {
       throw new Error("User not found");
     }
 
+    // Update user roles
+    users[userIndex].roles = request.roles;
+
+    // Save updated users back to XML file
+    await saveUsersToXML(users);
+
     // Update cache
     if (usersCache) {
       usersCache[userIndex] = {
         ...usersCache[userIndex],
         roles: [...request.roles]
       };
-      return { ...usersCache[userIndex] };
     }
 
-    return {
-      ...users[userIndex],
-      roles: [...request.roles]
-    };
+    return { ...users[userIndex] };
   }
 };
