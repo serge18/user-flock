@@ -84,9 +84,12 @@ export const apiService = {
     }
 
     const users = await parseUsersXML();
+    console.log('Available users:', users.map(u => ({ id: u.id, name: u.name })));
+    console.log('Looking for user ID:', request.userId);
+    
     const userIndex = users.findIndex(u => u.id === request.userId);
     if (userIndex === -1) {
-      throw new Error("User not found");
+      throw new Error(`User not found. Available users: ${users.map(u => u.id).join(', ')}`);
     }
 
     // Update cache
