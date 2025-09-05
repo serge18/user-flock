@@ -1,0 +1,74 @@
+[
+  {
+    "id": "a8f5f167-f44b-4c2d-8b5e-f2a3b8c9d0e1",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@company.com",
+    "roles": ["Editor", "Viewer"]
+  },
+  {
+    "id": "b7e4e156-e33a-3b1c-7a4d-e1a2b7c8d9f0",
+    "name": "Bob Smith",
+    "email": "bob.smith@company.com",
+    "roles": ["Editor", "Viewer", "Admin"]
+  },
+  {
+    "id": "c6d3d145-d22b-2a0b-6a3c-d0a1b6c7d8e9",
+    "name": "Carol Davis",
+    "email": "carol.davis@company.com",
+    "roles": ["Viewer"]
+  },
+  {
+    "id": "d5c2c134-c11a-1909-5a2b-c9a0b5c6d7e8",
+    "name": "David Wilson",
+    "email": "david.wilson@company.com",
+    "roles": ["Admin", "Editor", "Viewer"]
+  },
+  {
+    "id": "e4b1b123-b008-0808-4a1a-b8a9b4c5d6e7",
+    "name": "Eva Brown",
+    "email": "eva.brown@company.com",
+    "roles": ["Editor", "Viewer"]
+  },
+  {
+    "id": "f3a0a012-a997-9797-3a0a-a7a8a3a4a5a6",
+    "name": "Frank Miller",
+    "email": "frank.miller@company.com",
+    "roles": ["Admin"]
+  },
+  {
+    "id": "g2989901-9886-8686-2999-96979295949a",
+    "name": "Grace Taylor",
+    "email": "grace.taylor@company.com",
+    "roles": ["Viewer"]
+  },
+  {
+    "id": "h1878890-8775-7575-1888-8586848382b1",
+    "name": "Henry Anderson",
+    "email": "henry.anderson@company.com",
+    "roles": ["Editor", "Viewer"]
+  },
+  {
+    "id": "i0767789-7664-6464-0777-7475737271c2",
+    "name": "Iris Thompson",
+    "email": "iris.thompson@company.com",
+    "roles": ["Admin", "Viewer"]
+  },
+  {
+    "id": "j9656678-6553-5353-9666-6364626160d3",
+    "name": "Jack White",
+    "email": "jack.white@company.com",
+    "roles": ["Editor"]
+  },
+  {
+    "id": "k8545567-5442-4242-8555-5253515049e4",
+    "name": "Kate Harris",
+    "email": "kate.harris@company.com",
+    "roles": ["Viewer"]
+  },
+  {
+    "id": "l7434456-4331-3131-7444-4142403938f5",
+    "name": "Leo Martin",
+    "email": "leo.martin@company.com",
+    "roles": ["Admin", "Editor"]
+  }
+]

@@ -4,80 +4,35 @@ import { User, Role, UpdateUserRolesRequest } from "@/types/user";
 let usersCache: User[] | null = null;
 let rolesCache: Role[] | null = null;
 
-// Parse XML to get users
-async function parseUsersXML(): Promise<User[]> {
+// Parse JSON to get users
+async function parseUsersJSON(): Promise<User[]> {
   if (usersCache) return usersCache;
   
-  const response = await fetch('/users.xml');
-  const xmlText = await response.text();
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-  
-  const userElements = xmlDoc.getElementsByTagName('user');
-  const users: User[] = [];
-  
-  for (let i = 0; i < userElements.length; i++) {
-    const userElement = userElements[i];
-    const id = userElement.getElementsByTagName('id')[0]?.textContent || '';
-    const name = userElement.getElementsByTagName('name')[0]?.textContent || '';
-    const email = userElement.getElementsByTagName('email')[0]?.textContent || '';
-    
-    const roleElements = userElement.getElementsByTagName('role');
-    const roles: string[] = [];
-    for (let j = 0; j < roleElements.length; j++) {
-      const roleText = roleElements[j]?.textContent;
-      if (roleText) roles.push(roleText);
-    }
-    
-    users.push({ id, name, email, roles });
-  }
+  const response = await fetch('/users.json');
+  const users: User[] = await response.json();
   
   usersCache = users;
   return users;
 }
 
-// Parse XML to get roles
-async function parseRolesXML(): Promise<Role[]> {
+// Parse JSON to get roles
+async function parseRolesJSON(): Promise<Role[]> {
   if (rolesCache) return rolesCache;
   
-  const response = await fetch('/roles.xml');
-  const xmlText = await response.text();
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-  
-  const roleElements = xmlDoc.getElementsByTagName('role');
-  const roles: Role[] = [];
-  
-  for (let i = 0; i < roleElements.length; i++) {
-    const roleElement = roleElements[i];
-    const id = roleElement.getElementsByTagName('id')[0]?.textContent || '';
-    const name = roleElement.getElementsByTagName('name')[0]?.textContent || '';
-    const description = roleElement.getElementsByTagName('description')[0]?.textContent || '';
-    
-    roles.push({ id, name, description });
-  }
+  const response = await fetch('/roles.json');
+  const roles: Role[] = await response.json();
   
   rolesCache = roles;
   return roles;
 }
 
-// Save users to XML file
-async function saveUsersToXML(users: User[]): Promise<void> {
-  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-<users>
-${users.map(user => `  <user>
-    <id>${user.id}</id>
-    <name>${user.name}</name>
-    <email>${user.email}</email>
-    <roles>
-${user.roles.map(role => `      <role>${role}</role>`).join('\n')}
-    </roles>
-  </user>`).join('\n')}
-</users>`;
-
+// Save users to JSON file
+async function saveUsersToJSON(users: User[]): Promise<void> {
+  const jsonContent = JSON.stringify(users, null, 2);
+  
   // In a real app, this would save to the server
   // For now, we'll just simulate the save operation
-  console.log('Saving users to XML:', xmlContent);
+  console.log('Saving users to JSON:', jsonContent);
 }
 
 // Simulate API delay
@@ -86,41 +41,36 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const apiService = {
   async getUsers(): Promise<User[]> {
     await delay(800); // Simulate network delay
-    return await parseUsersXML();
+    return await parseUsersJSON();
   },
 
   async getRoles(): Promise<Role[]> {
     await delay(300);
-    return await parseRolesXML();
+    return await parseRolesJSON();
   },
 
   async updateUserRoles(request: UpdateUserRolesRequest): Promise<User> {
     await delay(500);
     
     // Simulate occasional API failures for demo
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.05) {
       throw new Error("Failed to update user roles. Please try again.");
     }
 
-    const users = await parseUsersXML();
+    const users = await parseUsersJSON();
     const userIndex = users.findIndex(u => u.id === request.userId);
     if (userIndex === -1) {
       throw new Error("User not found");
     }
 
     // Update user roles
-    users[userIndex].roles = request.roles;
+    users[userIndex].roles = [...request.roles];
 
-    // Save updated users back to XML file
-    await saveUsersToXML(users);
+    // Save updated users back to JSON file
+    await saveUsersToJSON(users);
 
-    // Update cache
-    if (usersCache) {
-      usersCache[userIndex] = {
-        ...usersCache[userIndex],
-        roles: [...request.roles]
-      };
-    }
+    // Clear cache to force refresh
+    usersCache = null;
 
     return { ...users[userIndex] };
   }

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "role-1",
+    "name": "Admin",
+    "description": "Full system access with ability to manage users, roles, and system settings"
+  },
+  {
+    "id": "role-2",
+    "name": "Editor",
+    "description": "Can create, edit, and publish content with moderation capabilities"
+  },
+  {
+    "id": "role-3",
+    "name": "Viewer",
+    "description": "Read-only access to view content and basic system information"
+  }
+]
