@@ -36,14 +36,17 @@ export function UserRoleManager() {
   // Update user roles mutation
   const updateUserRolesMutation = useMutation({
     mutationFn: apiService.updateUserRoles,
-    onSuccess: (updatedUser) => {
+    onSuccess: async (updatedUser) => {
+      // Update the cache immediately
       queryClient.setQueryData(["users"], (oldUsers: User[]) =>
         oldUsers.map((user) =>
           user.id === updatedUser.id ? updatedUser : user
         )
       );
-      // Force a refetch to ensure UI is in sync
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      
+      // Also invalidate and refetch to ensure consistency
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+      
       toast({
         title: "Success",
         description: "User roles updated successfully",
@@ -248,6 +251,7 @@ export function UserRoleManager() {
                         </TableCell>
                         <TableCell>
                           <MultiSelect
+                            key={`${user.id}-${JSON.stringify(user.roles)}`}
                             options={roleOptions}
                             selected={user.roles}
                             onChange={(newRoles) => handleRoleChange(user.id, newRoles)}
