@@ -88,14 +88,6 @@ export function UserRoleManager() {
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
-    if (newRoles.length === 0) {
-      toast({
-        title: "Error",
-        description: "Users must have at least one role assigned",
-        variant: "destructive",
-      });
-      return;
-    }
     updateUserRolesMutation.mutate({ userId, roles: newRoles });
   };
 
