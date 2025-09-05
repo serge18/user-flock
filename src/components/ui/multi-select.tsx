@@ -51,6 +51,8 @@ export function MultiSelect({
     } else {
       onChange([...selected, item]);
     }
+    // Keep dropdown open after selection
+    setOpen(true);
   };
 
   return (
