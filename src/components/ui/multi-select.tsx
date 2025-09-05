@@ -51,8 +51,6 @@ export function MultiSelect({
     } else {
       onChange([...selected, item]);
     }
-    // Keep dropdown open after selection
-    setOpen(true);
   };
 
   return (
@@ -74,17 +72,17 @@ export function MultiSelect({
                 <Badge
                   variant="secondary"
                   key={item}
-                  className="mr-1 mb-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUnselect(item);
-                  }}
+                  className="mr-1 mb-1 pr-1"
                 >
                   {options.find((option) => option.value === item)?.label}
-                  <button
-                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  <div
+                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer inline-flex items-center"
+                    role="button"
+                    tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
                         handleUnselect(item);
                       }
                     }}
@@ -99,7 +97,7 @@ export function MultiSelect({
                     }}
                   >
                     <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  </button>
+                  </div>
                 </Badge>
               ))
             ) : (

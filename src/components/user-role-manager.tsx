@@ -42,6 +42,8 @@ export function UserRoleManager() {
           user.id === updatedUser.id ? updatedUser : user
         )
       );
+      // Force a refetch to ensure UI is in sync
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       toast({
         title: "Success",
         description: "User roles updated successfully",
