@@ -246,6 +246,7 @@ export function UserRoleManager() {
                         </TableCell>
                         <TableCell>
                           <MultiSelect
+                            key={`${user.id}-${user.roles.join(',')}`}
                             options={roleOptions}
                             selected={user.roles}
                             onChange={(newRoles) => handleRoleChange(user.id, newRoles)}
