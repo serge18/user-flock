@@ -275,6 +275,7 @@ export function UserRoleManager() {
                         <PaginationLink
                           onClick={() => setCurrentPage(page)}
                           isActive={currentPage === page}
+                          size="icon"
                           className="cursor-pointer"
                         >
                           {page}
