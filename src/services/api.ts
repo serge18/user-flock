@@ -26,20 +26,11 @@ async function parseRolesJSON(): Promise<Role[]> {
   return roles;
 }
 
-// Save users to JSON file
+// Simulate saving users (no actual file operations in demo)
 async function saveUsersToJSON(users: User[]): Promise<void> {
-  const jsonContent = JSON.stringify(users, null, 2);
-  
-  // Create and trigger download of updated users.json
-  const blob = new Blob([jsonContent], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'users.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // In a real app, this would save to the server
+  // For demo purposes, we just simulate the operation
+  console.log('Simulated save operation for', users.length, 'users');
 }
 
 // Simulate API delay
