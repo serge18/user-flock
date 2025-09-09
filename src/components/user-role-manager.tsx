@@ -79,10 +79,8 @@ export function UserRoleManager() {
 
   // Pagination logic
   const totalPages = Math.ceil(filteredAndSortedUsers.length / usersPerPage);
-  const paginatedUsers = React.useMemo(() => {
-    const startIndex = (currentPage - 1) * usersPerPage;
-    return filteredAndSortedUsers.slice(startIndex, startIndex + usersPerPage);
-  }, [filteredAndSortedUsers, currentPage, usersPerPage]);
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const paginatedUsers = filteredAndSortedUsers.slice(startIndex, startIndex + usersPerPage);
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
@@ -225,7 +223,7 @@ export function UserRoleManager() {
                         )}
                       </div>
                     </TableHead>
-                    <TableHead className="w-[300px]">Roles</TableHead>
+                    <TableHead className="w-[400px]">Roles</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
