@@ -26,12 +26,6 @@ async function parseRolesJSON(): Promise<Role[]> {
   return roles;
 }
 
-// Simulate saving users (no actual file operations in demo)
-async function saveUsersToJSON(users: User[]): Promise<void> {
-  // In a real app, this would save to the server
-  // For demo purposes, we just simulate the operation
-  console.log('Simulated save operation for', users.length, 'users');
-}
 
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -63,9 +57,6 @@ export const apiService = {
 
     // Update user roles
     users[userIndex].roles = [...request.roles];
-
-    // Save updated users back to JSON file
-    await saveUsersToJSON(users);
 
     // Clear cache to force refresh
     usersCache = null;
