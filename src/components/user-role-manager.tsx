@@ -36,9 +36,13 @@ export function UserRoleManager() {
   // Update user roles mutation
   const updateUserRolesMutation = useMutation({
     mutationFn: apiService.updateUserRoles,
-    onSuccess: async () => {
-      // Force a complete refetch to ensure UI is in sync
-      await queryClient.invalidateQueries({ queryKey: ["users"] });
+    onSuccess: async (updatedUser) => {
+      // Update the cache immediately
+      queryClient.setQueryData(["users"], (oldUsers: User[]) =>
+        oldUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        )
+      );
       
       toast({
         title: "Success",
@@ -84,7 +88,6 @@ export function UserRoleManager() {
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
-    console.log('handleRoleChange called:', { userId, newRoles });
     updateUserRolesMutation.mutate({ userId, roles: newRoles });
   };
 

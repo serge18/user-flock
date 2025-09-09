@@ -26,27 +26,25 @@ async function parseRolesJSON(): Promise<Role[]> {
   return roles;
 }
 
-
 // Simulate API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const apiService = {
   async getUsers(): Promise<User[]> {
-    await delay(800); // Simulate network delay
+    await delay();
     return await parseUsersJSON();
   },
 
   async getRoles(): Promise<Role[]> {
-    await delay(300);
+    await delay();
     return await parseRolesJSON();
   },
 
   async updateUserRoles(request: UpdateUserRolesRequest): Promise<User> {
-    console.log('updateUserRoles API called:', request);
-    await delay(500);
+    await delay();
     
     // Simulate occasional API failures for demo
-    if (Math.random() < 0.05) {
+    if (Math.random() < 0.1) {
       throw new Error("Failed to update user roles. Please try again.");
     }
 
@@ -59,8 +57,8 @@ export const apiService = {
     // Update user roles
     users[userIndex].roles = [...request.roles];
 
-    // Clear cache to force refresh
-    usersCache = null;
+    // Update cache
+    usersCache[userIndex].roles = [...request.roles];
 
     return { ...users[userIndex] };
   }
