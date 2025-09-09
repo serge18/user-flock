@@ -30,9 +30,16 @@ async function parseRolesJSON(): Promise<Role[]> {
 async function saveUsersToJSON(users: User[]): Promise<void> {
   const jsonContent = JSON.stringify(users, null, 2);
   
-  // In a real app, this would save to the server
-  // For now, we'll just simulate the save operation
-  console.log('Saving users to JSON:', jsonContent);
+  // Create and trigger download of updated users.json
+  const blob = new Blob([jsonContent], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'users.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // Simulate API delay
