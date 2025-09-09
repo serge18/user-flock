@@ -42,6 +42,7 @@ export const apiService = {
   },
 
   async updateUserRoles(request: UpdateUserRolesRequest): Promise<User> {
+    console.log('updateUserRoles API called:', request);
     await delay(500);
     
     // Simulate occasional API failures for demo

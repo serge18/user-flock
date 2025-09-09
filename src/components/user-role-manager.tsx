@@ -84,6 +84,7 @@ export function UserRoleManager() {
 
   // Handle role change for a user
   const handleRoleChange = (userId: string, newRoles: string[]) => {
+    console.log('handleRoleChange called:', { userId, newRoles });
     updateUserRolesMutation.mutate({ userId, roles: newRoles });
   };
 
